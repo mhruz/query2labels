@@ -111,7 +111,7 @@ class Backbone(BackboneBase):
         if name in ['resnet18', 'resnet50', 'resnet34', 'resnet101']:
             backbone = getattr(torchvision.models, name)(
                 replace_stride_with_dilation=[False, False, dilation],
-                pretrained=True,
+                weights="IMAGENET1K_V2",
                 norm_layer=FrozenBatchNorm2d)
             if return_interm_layers:
                 return_layers = {"layer1": "0", "layer2": "1", "layer3": "2", "layer4": "3"}
