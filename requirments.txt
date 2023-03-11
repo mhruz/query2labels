@@ -3,3 +3,8 @@ einops
 addict
 yapf
 inplace_abn
+randaugment
+termcolor
+scipy
+einops
+timm
