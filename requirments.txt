@@ -8,3 +8,4 @@ termcolor
 scipy
 einops
 timm
+pycocotools
