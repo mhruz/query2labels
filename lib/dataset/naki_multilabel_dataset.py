@@ -40,7 +40,7 @@ class NAKIDataset(data.Dataset):
                         break
 
                 if read_to_mem:
-                    self.data["images"] = Image.open(os.path.join(image_dir, image["file_path"]))
+                    self.data["images"].append(np.array(Image.open(os.path.join(image_dir, image["file_path"]))))
                 else:
                     self.data["images"].append(image["file_path"])
 
