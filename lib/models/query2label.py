@@ -47,7 +47,7 @@ class GroupWiseLinear(nn.Module):
         return x
 
 
-class Qeruy2Label(nn.Module):
+class Query2Label(nn.Module):
     def __init__(self, backbone, transfomer, num_class):
         """[summary]
     
@@ -97,7 +97,7 @@ def build_q2l(args):
     backbone = build_backbone(args)
     transformer = build_transformer(args)
 
-    model = Qeruy2Label(
+    model = Query2Label(
         backbone = backbone,
         transfomer = transformer,
         num_class = args.num_class
