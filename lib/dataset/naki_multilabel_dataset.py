@@ -13,12 +13,16 @@ from tqdm import tqdm
 
 
 class NAKIDataset(data.Dataset):
-    def __init__(self, image_dir, anno_path, input_transform=None,
-                 labels_path=None,
-                 used_category=-1):
+    def __init__(self, image_dir, anno_path, input_transform=None, read_to_mem=False):
 
         self.data = {"images": [], "targets": []}
         self.image_dir = image_dir
+        self.classes = {"signature": 0, "handwritten": 1, "title": 2, "stamp": 3, "typewritten": 4, "plaintext": 5,
+                        "fingerprint": 6, "photo": 7, "other": 8, "list": 9}
+        self.classes_inv = {v: k for k, v in self.classes.items()}
+
+        self.stored_in_mem = not read_to_mem
+        self.input_transform = input_transform
 
         image2index = {}
         image_index = 0
@@ -26,26 +30,43 @@ class NAKIDataset(data.Dataset):
         for ann in label_data["annotations"]:
             image_id = ann["image_id"]
             if image_id not in image2index:
-                image2index[image_id] = image_index
+                image2index[image_id] = None
                 image_index = len(image2index) - 1
+                image2index[image_id] = image_index
 
                 image = None
                 for image in label_data["images"]:
                     if image["id"] == image_id:
                         break
 
-                self.data["images"].append(image["file_path"])
+                if read_to_mem:
+                    self.data["images"] = Image.open(os.path.join(image_dir, image["file_path"]))
+                else:
+                    self.data["images"].append(image["file_path"])
+
                 self.data["targets"].append([])
             else:
                 image_index = image2index[image_id]
 
-            self.data["targets"][image_index].append(ann["label"])
+            self.data["targets"][image_index].append(self.classes[ann["label"]])
+
+        # make "N-hot" vectors
+        for i, d in enumerate(self.data["targets"]):
+            temp_tensor = torch.zeros(len(self.classes))
+            temp_tensor[d] = 1.0
+
+            self.data["targets"][i] = temp_tensor
 
     def __getitem__(self, index):
-        input = self.coco[index][0]
+        if self.stored_in_mem:
+            input = self.data["images"][index]
+        else:
+            input = Image.open(os.path.join(self.image_dir, self.data["images"][index]))
+
         if self.input_transform:
             input = self.input_transform(input)
-        return input, self.labels[index]
+
+        return input, self.data["targets"][index]
 
     def getCategoryList(self, item):
         categories = set()
@@ -62,7 +83,7 @@ class NAKIDataset(data.Dataset):
         return label
 
     def __len__(self):
-        return len(self.coco)
+        return len(self.data["images"])
 
     def save_datalabels(self, outpath):
         """
