@@ -68,7 +68,6 @@ class Query2Label(nn.Module):
         self.query_embed = nn.Embedding(num_class, hidden_dim)
         self.fc = GroupWiseLinear(num_class, hidden_dim, bias=True)
 
-
     def forward(self, input):
         src, pos = self.backbone(input)
         src, pos = src[-1], pos[-1]
@@ -106,8 +105,5 @@ def build_q2l(args):
     if not args.keep_input_proj:
         model.input_proj = nn.Identity()
         print("set model.input_proj to Indentify!")
-    
 
     return model
-        
-        

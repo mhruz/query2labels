@@ -3,7 +3,7 @@ from torch.utils.data import DataLoader
 
 dataset = NAKIDataset("/home/mighty/data/NAKI/NAKI-Classification/images",
                       "/home/mighty/data/NAKI/NAKI-Classification/metadata.json",
-                      read_to_mem=True)
+                      read_to_mem=False)
 
 train_loader = DataLoader(dataset, batch_size=3, shuffle=False, num_workers=0, drop_last=False)
 

@@ -21,7 +21,7 @@ class NAKIDataset(data.Dataset):
                         "fingerprint": 6, "photo": 7, "other": 8, "list": 9}
         self.classes_inv = {v: k for k, v in self.classes.items()}
 
-        self.stored_in_mem = not read_to_mem
+        self.stored_in_mem = read_to_mem
         self.input_transform = input_transform
 
         image2index = {}
