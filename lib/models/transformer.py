@@ -20,7 +20,6 @@ from torch import nn, Tensor
 from torch.nn import MultiheadAttention
 
 
-
 class Transformer(nn.Module):
 
     def __init__(self, d_model=512, nhead=8, num_encoder_layers=6,

@@ -1,3 +1,4 @@
+import numpy
 import torch
 import sys
 import os
@@ -62,6 +63,7 @@ class NAKIDataset(data.Dataset):
             input = self.data["images"][index]
         else:
             input = Image.open(os.path.join(self.image_dir, self.data["images"][index]))
+            input = numpy.array(input)
 
         if self.input_transform:
             input = self.input_transform(input)

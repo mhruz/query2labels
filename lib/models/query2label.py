@@ -48,22 +48,22 @@ class GroupWiseLinear(nn.Module):
 
 
 class Query2Label(nn.Module):
-    def __init__(self, backbone, transfomer, num_class):
+    def __init__(self, backbone, transformer, num_class):
         """[summary]
     
         Args:
             backbone ([type]): backbone model.
-            transfomer ([type]): transformer model.
+            transformer ([type]): transformer model.
             num_class ([type]): number of classes. (80 for MSCOCO).
         """
         super().__init__()
         self.backbone = backbone
-        self.transformer = transfomer
+        self.transformer = transformer
         self.num_class = num_class
 
         # assert not (self.ada_fc and self.emb_fc), "ada_fc and emb_fc cannot be True at the same time."
         
-        hidden_dim = transfomer.d_model
+        hidden_dim = transformer.d_model
         self.input_proj = nn.Conv2d(backbone.num_channels, hidden_dim, kernel_size=1)
         self.query_embed = nn.Embedding(num_class, hidden_dim)
         self.fc = GroupWiseLinear(num_class, hidden_dim, bias=True)
@@ -97,9 +97,9 @@ def build_q2l(args):
     transformer = build_transformer(args)
 
     model = Query2Label(
-        backbone = backbone,
-        transfomer = transformer,
-        num_class = args.num_class
+        backbone=backbone,
+        transformer=transformer,
+        num_class=args.num_class
     )
 
     if not args.keep_input_proj:
