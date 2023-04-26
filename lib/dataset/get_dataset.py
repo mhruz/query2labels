@@ -1,6 +1,7 @@
 import torchvision.transforms as transforms
 from dataset.cocodataset import CoCoDataset
 from dataset.naki_multilabel_dataset import NAKIDataset
+from dataset.utils import CropAndDeskew, PadImage
 from utils.cutout import SLCutoutPIL
 from randaugment import RandAugment
 import os.path as osp
@@ -16,10 +17,18 @@ def get_datasets(args):
                                          std=[0.229, 0.224, 0.225])
         # print("mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]")
 
-    train_data_transform_list = [transforms.Resize((args.img_size, args.img_size)),
-                                 RandAugment(),
-                                 transforms.ToTensor(),
-                                 normalize]
+    if args.dataname == "naki":
+        train_data_transform_list = [CropAndDeskew(),
+                                     PadImage(),
+                                     transforms.Resize((args.img_size, args.img_size)),
+                                     RandAugment(),
+                                     transforms.ToTensor(),
+                                     normalize]
+    else:
+        train_data_transform_list = [transforms.Resize((args.img_size, args.img_size)),
+                                     RandAugment(),
+                                     transforms.ToTensor(),
+                                     normalize]
     try:
         # for q2l_infer scripts
         if args.cutout:
@@ -29,10 +38,18 @@ def get_datasets(args):
         Warning(e)
     train_data_transform = transforms.Compose(train_data_transform_list)
 
-    test_data_transform = transforms.Compose([
-        transforms.Resize((args.img_size, args.img_size)),
-        transforms.ToTensor(),
-        normalize])
+    if args.dataname == "naki":
+        test_data_transform = transforms.Compose([
+            CropAndDeskew(),
+            PadImage(),
+            transforms.Resize((args.img_size, args.img_size)),
+            transforms.ToTensor(),
+            normalize])
+    else:
+        test_data_transform = transforms.Compose([
+            transforms.Resize((args.img_size, args.img_size)),
+            transforms.ToTensor(),
+            normalize])
 
     if args.dataname == 'coco' or args.dataname == 'coco14':
         # ! config your data path here.

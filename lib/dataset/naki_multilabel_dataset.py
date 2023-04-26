@@ -1,3 +1,4 @@
+import cv2
 import numpy
 import torch
 import sys
@@ -11,6 +12,7 @@ import numpy as np
 import json
 import random
 from tqdm import tqdm
+from dataset.utils import pad_image, deskew_fft, crop_image, rotate, rgb_binary
 
 
 class NAKIDataset(data.Dataset):
@@ -95,5 +97,3 @@ class NAKIDataset(data.Dataset):
         os.makedirs(os.path.dirname(outpath), exist_ok=True)
         labels = np.array(self.labels)
         np.save(outpath, labels)
-
-
