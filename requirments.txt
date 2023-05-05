@@ -14,3 +14,4 @@ Pillow~=9.4.0
 opencv-python~=4.7.0.72
 scikit-image~=0.20.0
 pyFFTW~=0.13.1
+matplotlib~=3.7.1

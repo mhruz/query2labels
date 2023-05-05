@@ -18,10 +18,12 @@ def get_datasets(args):
         # print("mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]")
 
     if args.dataname == "naki":
+
         train_data_transform_list = [CropAndDeskew(),
                                      PadImage(),
+                                     transforms.ToPILImage(),
                                      transforms.Resize((args.img_size, args.img_size)),
-                                     RandAugment(),
+                                     # RandAugment(),
                                      transforms.ToTensor(),
                                      normalize]
     else:

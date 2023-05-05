@@ -58,7 +58,7 @@ def deskew_fft(input_image, angle_range=10, step=0.25, point_number_fraction=1.0
 
     stop_angle = time.time()
     idx = np.argmax(np.sum(np.abs(pixel_array), axis=1))
-    print(f"FFT time: {stop_fft - start_fft}, ANGLE time {stop_angle - start_angle}, IDX {idx}")
+    # print(f"FFT time: {stop_fft - start_fft}, ANGLE time {stop_angle - start_angle}, IDX {idx}")
     angle = angle_list[idx]
     if angle == -angle_range:
         angle = 0.0
@@ -144,7 +144,7 @@ def crop_and_deskew(image):
     image = crop_image(image, tol=75)
     src = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     blur = cv2.blur(src, (5, 5))
-    angle = deskew_fft(blur, step=0.25, downsample_constant=1, angle_range=25, point_number_fraction=1.0,
+    angle = deskew_fft(blur, step=0.25, downsample_constant=3, angle_range=25, point_number_fraction=1.0,
                        crop_percent=10)
     image = rotate(image, angle).astype(np.uint8)
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
@@ -159,7 +159,8 @@ class CropAndDeskew:
         pass
 
     def __call__(self, image):
-        return torch.from_numpy(crop_and_deskew(image))
+        # return torch.from_numpy(crop_and_deskew(image))
+        return crop_and_deskew(image)
 
 
 class PadImage:
@@ -167,7 +168,8 @@ class PadImage:
         pass
 
     def __call__(self, image, aspect_ratio=1.0):
-        return torch.from_numpy(pad_image(image, aspect_ratio))
+        # return torch.from_numpy(pad_image(image, aspect_ratio))
+        return pad_image(image, aspect_ratio)
 
 
 if __name__ == "__main__":
